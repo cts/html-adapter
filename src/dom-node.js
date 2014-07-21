@@ -128,7 +128,7 @@ CTS.Fn.extend(CTS.Adapters.Html.HtmlNode.prototype, CTS.Node.Base, CTS.Events, C
    },
 
    _subclass_beginClone: function($node) {
-     return this._subclass_beginClone_base($node, CTS.Adapters.Html.Node);
+     return this._subclass_beginClone_base($node, CTS.Adapters.Html.HtmlNode);
    },
 
   /************************************************************************
