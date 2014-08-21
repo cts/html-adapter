@@ -146,11 +146,18 @@ CTS.Fn.extend(CTS.Adapters.Html.HtmlNode.prototype, CTS.Node.Base, CTS.Events, C
   },
 
   setValue: function(value, opts) {
+    var v = value;
+    if (opts && opts.prefix) {
+      v = opts.prefix + v;
+    }
+    if (opts && opts.suffix) {
+      v = v + opts.suffix;
+    }
     if (Fn.isUndefined(opts) || Fn.isUndefined(opts.attribute)) {
-      this.value.html("" + value);
+      this.value.html("" + v);
     } else {
       if (opts.attribute != null) {
-        this.value.attr(opts.attribute, value);
+        this.value.attr(opts.attribute, v);
       }
     }
   },
@@ -170,6 +177,10 @@ CTS.Fn.extend(CTS.Adapters.Html.HtmlNode.prototype, CTS.Node.Base, CTS.Events, C
    * _throwEvent(name, data)
    */
   _subclass_throwChangeEvents: function(toggle, subtree) {
+    if (typeof this._valueChangedListenerProxy == 'undefined') {
+      this._valueChangedListenerProxy = CTS.$.proxy(this._subclass_valueChangedListener, this);
+    }
+
     var existing = (this._subclass_proxy_handleDomChange != null);
     // GET
     if (typeof toggle == 'undefined') {

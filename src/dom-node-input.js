@@ -87,7 +87,7 @@ CTS.Fn.extend(CTS.Adapters.Html.HtmlInputNode.prototype, CTS.Node.Base, CTS.Even
   setValue: function(value, opts) {
     if (Fn.isUndefined(opts) || Fn.isUndefined(opts.attribute)) {
       if (this.subKind == "checkbox") {
-        var checked = CTS.Fn.truthyOrFalsy(value);
+        var checked = Util.Helper.truthyOrFalsy(value);
         this.value.prop('checked', checked);
       } else if (this.subKind == "select") {
         this.value.val(value);

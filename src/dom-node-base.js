@@ -122,7 +122,7 @@ CTS.Adapters.Html.HtmlNodeBase = {
       if (((spec.projection == 'Rows') && (! spec.row)) ||
           ((spec.projection == 'Cols') && (! spec.col))) {
         if (this.value.is("form")) {
-            return "this :graft " + s + " {createNew: true};";
+            return "this :graft " + s + ' {"createNew": "true"};';
           } else {
             return "this :are " + s + ";";
           }
