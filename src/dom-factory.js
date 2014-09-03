@@ -1,55 +1,64 @@
-CTS.registerNamespace('CTS.Adapters.Html.Factory');
+var HtmlTree = require('./dom-tree');
+var HtmlNode = require('./dom-node');
+var HtmlInputNode = require('./dom-node-input');
 
-CTS.Adapters.Html.Factory.TreeWithJquery = function(node, forrest, spec) {
-  var promise = CTS.Promise.defer();
-  var tree = new CTS.Adapters.Html.HtmlTree(forrest, spec);
-  CTS.Adapters.Html.Factory.HtmlNode(node, tree).then(
-    function(ctsNode) {
-      ctsNode.realizeChildren().then(
-        function() {
-          tree.setRoot(ctsNode);
-          if (spec.receiveEvents) {
-            tree.toggleReceiveRelationEvents(true);
+var Util = require('cts/util');
+
+module.exports = {
+  TreeWithJquery: function(node, forrest, spec) {
+    var promise = Util.Promise.defer();
+    var tree = new HtmlTree(forrest, spec);
+    module.exports.HtmlNode(node, tree).then(
+      function(ctsNode) {
+        ctsNode.realizeChildren().then(
+          function() {
+            tree.setRoot(ctsNode);
+            if (spec.receiveEvents) {
+              tree.toggleReceiveRelationEvents(true);
+            }
+            promise.resolve(tree);
+          },
+          function(reason) {
+            promise.reject(reason);
           }
-          promise.resolve(tree);
-        },
-        function(reason) {
-          promise.reject(reason);
-        }
-      );
-    },
-    function(reason) {
-      promise.reject(reason);
-    }
-  );
-  return promise;
-};
-
-CTS.Adapters.Html.Factory.HtmlNode = function(node, tree, opts) {
-  var deferred = CTS.Promise.defer();
-  var klass = CTS.Adapters.Html.HtmlNode;
-
-  if (! CTS.Fn.isUndefined(node.jquery)) {
-    if (node.is('input') || node.is('select')) {
-      klass = CTS.Adapters.Html.HtmlInputNode;
-    }
-  } else if (node instanceof Element) {
-    if ((node.nodeName == 'INPUT') || (node.nodeName == 'SELECT')) {
-      klass = CTS.Adapters.Html.HtmlInputNode;
-    }
-  }
-
-  var node = new klass(node, tree, opts);
-  node.parseInlineRelationSpecs().then(
-    function() {
-      if (node == null) {
-        CTS.Log.Error("Created NULL child");
+        );
+      },
+      function(reason) {
+        promise.reject(reason);
       }
-      deferred.resolve(node);
-    },
-    function(reason) {
-      deferred.reject(reason);
+    );
+    return promise;
+  },
+
+  HtmlNode: function(node, tree, opts) {
+    var deferred = Util.Promise.defer();
+    var klass = HtmlNode;
+
+    if (! Util._.isUndefined(node.jquery)) {
+      if (node.is('input') || node.is('select')) {
+        klass = HtmlInputNode;
+      }
+    } else if (node instanceof Element) {
+      if ((node.nodeName == 'INPUT') || (node.nodeName == 'SELECT')) {
+        klass = HtmlInputNode;
+      }
     }
-  );
-  return deferred.promise;
-};
+
+    var node = new klass(node, tree, opts);
+    node.parseInlineRelationSpecs().then(
+      function() {
+        if (node == null) {
+          Util.Log.Error("Created NULL child");
+        }
+        deferred.resolve(node);
+      },
+      function(reason) {
+        deferred.reject(reason);
+      }
+    );
+    return deferred.promise;
+  }
+}
+
+
+
