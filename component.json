@@ -1,0 +1,8 @@
+{
+  "name": "html-adapter",
+  "version": "0.8.0",
+  "main": "lib/index.js",
+  "dependencies": {
+    "cts/util": "0.8"
+  }
+}
